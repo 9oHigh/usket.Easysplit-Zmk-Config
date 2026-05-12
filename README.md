@@ -1,0 +1,1 @@
+# easysplit-zmk-config
