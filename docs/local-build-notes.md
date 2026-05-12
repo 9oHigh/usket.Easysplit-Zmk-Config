@@ -111,4 +111,21 @@ python -m pip install -r zmk.git/app/scripts/requirements.txt
 ## 의존성 설치 상태
 가상환경 안에서 ZMK 관련 Python 의존성 설치가 완료됐다.
 
-다음 단계는 보드와 빌드 대상 이름을 확인한 뒤, 실제 빌드가 되는지 검증하는 것이다.
+## Zephyr SDK 설치 메모
+`west build` 실행 중 Zephyr SDK가 없다는 오류가 발생했다.
+
+Zephyr SDK 설치 스크립트 실행 중 아래 오류가 발생했다.
+
+```text
+Zephyr SDK setup requires 'wget' to be installed and available in the PATH.
+```
+
+macOS에서 `wget`을 먼저 설치한 뒤 Zephyr SDK setup을 다시 실행한다.
+
+```bash
+brew install wget
+cd /Users/leegh/personal/zephyr-sdk-0.16.8
+./setup.sh
+```
+
+다음 단계는 Zephyr SDK 설치를 완료한 뒤 `settings_reset` 빌드를 다시 시도하는 것이다.
