@@ -84,3 +84,20 @@ pip 24.3.1 from /Users/leegh/personal/zmk-workspace/.venv/lib/python3.13/site-pa
 ```
 
 이후 ZMK 관련 Python 패키지 설치는 반드시 `.venv`가 활성화된 상태에서 진행한다.
+
+## requirements 경로 문제
+`zmk/app/requirements.txt`가 없다는 오류가 발생했다.
+
+```text
+ERROR: Could not open requirements file: No such file or directory: 'zmk/app/requirements.txt'
+```
+
+이 경우 추측으로 경로를 바꾸지 말고, 먼저 워크스페이스 안에서 실제 `requirements.txt` 위치를 찾는다.
+
+```bash
+cd /Users/leegh/personal/zmk-workspace
+source .venv/bin/activate
+find . -maxdepth 4 -name requirements.txt -print
+```
+
+나온 경로를 기준으로 필요한 requirements 파일만 설치한다.
