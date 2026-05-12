@@ -47,7 +47,7 @@ west zephyr-export
 아래 폴더들이 생성되면 ZMK 워크스페이스 초기화가 된 것이다.
 
 ```text
-zmk
+zmk.git
 zephyr
 modules
 ```
@@ -92,12 +92,23 @@ pip 24.3.1 from /Users/leegh/personal/zmk-workspace/.venv/lib/python3.13/site-pa
 ERROR: Could not open requirements file: No such file or directory: 'zmk/app/requirements.txt'
 ```
 
-이 경우 추측으로 경로를 바꾸지 말고, 먼저 워크스페이스 안에서 실제 `requirements.txt` 위치를 찾는다.
+워크스페이스 확인 결과 실제 경로는 아래였다.
+
+```text
+./zmk.git/app/scripts/requirements.txt
+./zephyr/scripts/requirements.txt
+```
+
+따라서 의존성 설치는 아래 경로를 사용한다.
 
 ```bash
 cd /Users/leegh/personal/zmk-workspace
 source .venv/bin/activate
-find . -maxdepth 4 -name requirements.txt -print
+python -m pip install -r zephyr/scripts/requirements.txt
+python -m pip install -r zmk.git/app/scripts/requirements.txt
 ```
 
-나온 경로를 기준으로 필요한 requirements 파일만 설치한다.
+## 의존성 설치 상태
+가상환경 안에서 ZMK 관련 Python 의존성 설치가 완료됐다.
+
+다음 단계는 보드와 빌드 대상 이름을 확인한 뒤, 실제 빌드가 되는지 검증하는 것이다.
