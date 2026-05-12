@@ -1,7 +1,7 @@
 # 로컬 ZMK 빌드 메모
 
 ## 현재 상황
-`easysplit-zmk-config` 저장소는 ZMK 설정 저장소다.
+`easysplit-zmk-config` 저장소는 내가 관리하는 키보드 설정 저장소다.
 
 따라서 이 저장소 루트에서 바로 아래 명령을 실행하면 실패한다.
 
@@ -16,10 +16,38 @@ west init -l .
 
 ```text
 ~/personal/easysplit-zmk-config   = 내가 관리하는 키보드 설정 저장소
-~/zmk-workspace                   = ZMK 본체와 Zephyr를 내려받는 빌드 워크스페이스
+~/personal/zmk-workspace          = ZMK 본체와 Zephyr를 내려받는 빌드 워크스페이스
 ```
 
 즉, 설정 저장소와 ZMK 워크스페이스를 분리한다.
 
-## 다음 작업
-ZMK 본체를 별도 워크스페이스에 내려받는다.
+## 주의: ZMK 매니페스트 위치
+ZMK 저장소는 루트에 `west.yml`이 있는 구조가 아니다.
+
+따라서 아래 명령도 실패할 수 있다.
+
+```bash
+west init -m https://github.com/zmkfirmware/zmk.git --mr main
+```
+
+ZMK의 매니페스트 파일 위치를 명시해야 한다.
+
+## 권장 초기화 명령
+기존 실패 흔적을 지운 뒤 아래 순서로 진행한다.
+
+```bash
+cd /Users/leegh/personal/zmk-workspace
+rm -rf .west zmk zephyr modules tools bootloader
+west init -m https://github.com/zmkfirmware/zmk.git --mr main --mf app/west.yml
+west update
+west zephyr-export
+```
+
+## 완료 기준
+아래 폴더들이 생성되면 ZMK 워크스페이스 초기화가 된 것이다.
+
+```text
+zmk
+zephyr
+modules
+```
