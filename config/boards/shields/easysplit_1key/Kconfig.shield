@@ -1,0 +1,2 @@
+config SHIELD_EASYSPLIT_1KEY
+    def_bool $(shields_list_contains,easysplit_1key)
