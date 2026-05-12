@@ -130,4 +130,18 @@ cd /Users/leegh/personal/zephyr-sdk-0.16.8
 
 Zephyr SDK setup 완료.
 
-다음 단계는 `settings_reset` 빌드를 다시 시도해 XIAO BLE 대상 펌웨어가 생성되는지 확인하는 것이다.
+## XIAO BLE settings_reset 빌드
+아래 명령으로 XIAO BLE 대상 `settings_reset` 빌드가 완료됐다.
+
+```bash
+cd /Users/leegh/personal/zmk-workspace
+source .venv/bin/activate
+rm -rf build
+west build -s zmk.git/app -b xiao_ble -- -DSHIELD=settings_reset
+ls -la build/zephyr | grep zmk
+```
+
+이 단계의 의미:
+- 로컬 ZMK 빌드 환경이 동작한다.
+- XIAO nRF52840 계열 보드 대상 펌웨어를 생성할 수 있다.
+- 다음 단계는 커스텀 키보드 설정 저장소에 최소 키보드 설정을 만들고 1키 입력 펌웨어를 빌드하는 것이다.
