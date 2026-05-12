@@ -51,3 +51,22 @@ zmk
 zephyr
 modules
 ```
+
+## Python 3.14 pip 문제
+현재 개인 노트북에서 `/opt/homebrew/bin/python3`가 Python 3.14.4를 가리킨다.
+
+`pip` 실행 중 `pyexpat` 로딩 오류가 발생했다.
+
+```text
+ImportError: Symbol not found: _XML_SetAllocTrackerActivationThreshold
+```
+
+이는 ZMK 문제가 아니라 Homebrew Python 3.14 환경 문제다.
+
+해결 방향은 Python 3.14를 고치는 것이 아니라, 이미 설치되어 있는 Python 3.13을 ZMK 전용 가상환경으로 사용하는 것이다.
+
+권장 방향:
+
+```text
+Python 3.13 전용 가상환경 생성 → 가상환경 안에서 pip 의존성 설치 → ZMK 빌드
+```
