@@ -65,8 +65,22 @@ ImportError: Symbol not found: _XML_SetAllocTrackerActivationThreshold
 
 해결 방향은 Python 3.14를 고치는 것이 아니라, 이미 설치되어 있는 Python 3.13을 ZMK 전용 가상환경으로 사용하는 것이다.
 
-권장 방향:
+## Python 3.13 가상환경
+개인 노트북에서 아래 가상환경 구성이 완료됐다.
+
+```bash
+cd /Users/leegh/personal/zmk-workspace
+/opt/homebrew/opt/python@3.13/bin/python3.13 -m venv .venv
+source .venv/bin/activate
+python --version
+pip --version
+```
+
+확인 결과:
 
 ```text
-Python 3.13 전용 가상환경 생성 → 가상환경 안에서 pip 의존성 설치 → ZMK 빌드
+Python 3.13.1
+pip 24.3.1 from /Users/leegh/personal/zmk-workspace/.venv/lib/python3.13/site-packages/pip
 ```
+
+이후 ZMK 관련 Python 패키지 설치는 반드시 `.venv`가 활성화된 상태에서 진행한다.
