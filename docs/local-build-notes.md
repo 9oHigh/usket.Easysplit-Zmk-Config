@@ -128,4 +128,6 @@ cd /Users/leegh/personal/zephyr-sdk-0.16.8
 ./setup.sh
 ```
 
-다음 단계는 Zephyr SDK 설치를 완료한 뒤 `settings_reset` 빌드를 다시 시도하는 것이다.
+Zephyr SDK setup 완료.
+
+다음 단계는 `settings_reset` 빌드를 다시 시도해 XIAO BLE 대상 펌웨어가 생성되는지 확인하는 것이다.
