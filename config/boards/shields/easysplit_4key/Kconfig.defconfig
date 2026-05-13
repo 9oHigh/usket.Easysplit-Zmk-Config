@@ -1,0 +1,6 @@
+if SHIELD_EASYSPLIT_4KEY
+
+config ZMK_KEYBOARD_NAME
+    default "EasySplit 4Key"
+
+endif
