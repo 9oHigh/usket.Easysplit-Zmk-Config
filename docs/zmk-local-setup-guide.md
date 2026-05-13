@@ -8,6 +8,7 @@
 XIAO nRF52840 / XIAO BLE 대상 ZMK 펌웨어를 로컬에서 빌드할 수 있다.
 settings_reset 빌드가 가능하다.
 easysplit_1key 커스텀 쉴드 빌드가 가능하다.
+easysplit_4key 커스텀 쉴드 빌드가 가능하다.
 ```
 
 ---
@@ -273,7 +274,51 @@ build/zephyr/zmk.uf2
 
 ---
 
-## 12. 자주 겪은 문제와 해결
+## 12. EasySplit 4키 테스트 펌웨어 빌드
+
+`easysplit-zmk-config` 저장소에는 4키 테스트용 쉴드가 추가되어 있다.
+
+```text
+config/boards/shields/easysplit_4key/
+├── Kconfig.defconfig
+├── Kconfig.shield
+├── easysplit_4key.keymap
+└── easysplit_4key.overlay
+```
+
+의미:
+
+```text
+D0 → A
+D1 → B
+D2 → C
+D3 → D
+```
+
+빌드 명령:
+
+```bash
+cd /Users/<username>/personal/zmk-workspace
+source .venv/bin/activate
+rm -rf build
+west build \
+  -s zmk.git/app \
+  -b xiao_ble \
+  -- \
+  -DSHIELD=easysplit_4key \
+  -DZMK_CONFIG=/Users/<username>/personal/easysplit-zmk-config/config
+ls -la build/zephyr | grep zmk
+```
+
+성공 기준:
+
+```text
+build/zephyr/zmk.uf2
+```
+
+---
+
+## 13. 자주 겪은 문제와 해결
 
 ### 문제 1. `west init -l .` 실패
 
@@ -395,7 +440,7 @@ source .venv/bin/activate
 
 ---
 
-## 13. 현재 완료 상태
+## 14. 현재 완료 상태
 
 ```text
 [완료] easysplit-zmk-config 저장소 생성
@@ -406,6 +451,7 @@ source .venv/bin/activate
 [완료] settings_reset 빌드 성공
 [완료] tester_xiao 빌드 성공
 [완료] easysplit_1key 빌드 성공
+[완료] easysplit_4key 빌드 성공
 ```
 
-다음 단계는 실제 XIAO nRF52840 보드가 도착한 뒤 `zmk.uf2`를 플래싱하고 D0-GND 스위치 입력을 확인하는 것이다.
+다음 단계는 실제 XIAO nRF52840 보드가 도착한 뒤 `zmk.uf2`를 플래싱하고 D0-GND, D0~D3-GND 스위치 입력을 확인하는 것이다.
