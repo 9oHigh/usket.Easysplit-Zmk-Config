@@ -1,0 +1,5 @@
+config SHIELD_EASYSPLIT_SPLIT_2X2_LEFT
+    def_bool $(shields_list_contains,easysplit_split_2x2_left)
+
+config SHIELD_EASYSPLIT_SPLIT_2X2_RIGHT
+    def_bool $(shields_list_contains,easysplit_split_2x2_right)
