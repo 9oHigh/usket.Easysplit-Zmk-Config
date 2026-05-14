@@ -23,7 +23,30 @@ README는 빠른 시작용이고, 자세한 절차는 이 문서에서 목적별
 zmk-local-setup-guide.md
 ```
 
-## 2. 부품 도착 후 실행
+자동 세팅:
+
+```bash
+bash scripts/setup-zmk-local-macos.sh
+```
+
+## 2. 빌드 스크립트
+
+| 스크립트 | 목적 | 산출물 |
+| --- | --- | --- |
+| `scripts/build-all.sh` | 모든 테스트 펌웨어 빌드 | 각 build 폴더의 zmk.uf2 |
+| `scripts/build-settings-reset.sh` | BLE 설정 초기화 펌웨어 빌드 | `build/zephyr/zmk.uf2` |
+| `scripts/build-1key.sh` | 1키 테스트 펌웨어 빌드 | `build/zephyr/zmk.uf2` |
+| `scripts/build-4key.sh` | 4키 테스트 펌웨어 빌드 | `build/zephyr/zmk.uf2` |
+| `scripts/build-split-2x2-left.sh` | 좌측 스플릿 펌웨어 빌드 | `build-left/zephyr/zmk.uf2` |
+| `scripts/build-split-2x2-right.sh` | 우측 스플릿 펌웨어 빌드 | `build-right/zephyr/zmk.uf2` |
+
+전체 빌드 확인:
+
+```bash
+bash scripts/build-all.sh
+```
+
+## 3. 부품 도착 후 실행
 
 | 문서 | 목적 |
 | --- | --- |
@@ -36,7 +59,7 @@ zmk-local-setup-guide.md
 bring-up-checklist.md
 ```
 
-## 3. 단일 보드 검증
+## 4. 단일 보드 검증
 
 | 문서 | 목적 |
 | --- | --- |
@@ -49,7 +72,7 @@ bring-up-checklist.md
 settings_reset → 1key → 4key
 ```
 
-## 4. 좌우 무선 스플릿 검증
+## 5. 좌우 무선 스플릿 검증
 
 | 문서 | 목적 |
 | --- | --- |
@@ -65,7 +88,7 @@ settings_reset → 1key → 4key
 오른쪽 D1 → D
 ```
 
-## 5. 문서 역할 기준
+## 6. 문서 역할 기준
 
 GitHub 문서는 아래 기준으로 관리한다.
 
@@ -87,7 +110,7 @@ Notion에서 관리할 것은 아래다.
 펀딩 전략
 ```
 
-## 6. 현재 문서 상태
+## 7. 현재 문서 상태
 
 | 문서 | 상태 | 비고 |
 | --- | --- | --- |
@@ -100,7 +123,7 @@ Notion에서 관리할 것은 아래다.
 | `flash-split-2x2-guide.md` | 핵심 | 좌우 스플릿 검증 |
 | `split-ble-test-checklist.md` | 핵심 | 좌우 스플릿 검증 체크리스트 |
 
-## 7. 현재 다음 단계
+## 8. 현재 다음 단계
 
 ```text
 부품 도착 후 bring-up-checklist.md 실행
