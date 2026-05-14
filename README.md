@@ -38,7 +38,13 @@ EasySplit의 ZMK 펌웨어 검증용 설정 저장소다.
 bash scripts/setup-zmk-local-macos.sh
 ```
 
-이미 환경이 준비되어 있을 때:
+이미 환경이 준비되어 있고 전체 빌드를 한 번에 확인할 때:
+
+```bash
+bash scripts/build-all.sh
+```
+
+개별 빌드가 필요할 때:
 
 ```bash
 bash scripts/build-settings-reset.sh
