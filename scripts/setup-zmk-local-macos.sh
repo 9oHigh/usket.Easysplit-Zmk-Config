@@ -42,7 +42,13 @@ fi
 
 if ! command -v west >/dev/null 2>&1; then
   log "west 설치"
-  python3 -m pip install --user west
+  # Homebrew Python은 PEP 668로 전역 pip 설치를 막으므로 pipx로 격리 설치한다.
+  if ! command -v pipx >/dev/null 2>&1; then
+    brew install pipx
+  fi
+  pipx install west
+  pipx ensurepath >/dev/null 2>&1 || true
+  export PATH="$HOME/.local/bin:$PATH"
 fi
 
 if [ ! -x "$PY313" ]; then

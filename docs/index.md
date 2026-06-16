@@ -10,7 +10,21 @@ README는 빠른 시작용이고, 자세한 절차는 이 문서에서 목적별
 0. 준비 → 1. 기술 검증 준비
 ```
 
-## 1. 로컬 환경 세팅
+## 0. 펌웨어 빌드 (기본: 클라우드)
+
+| 문서 | 목적 |
+| --- | --- |
+| `cloud-build-github-actions.md` | GitHub Actions로 펌웨어(.uf2) 빌드/배포 — **제품 기본 경로** |
+
+로컬 설치 없이 push만으로 빌드된다. 보드명은 `xiao_ble//zmk` 를 쓴다.
+
+```text
+코드 수정 → push → Actions 자동 빌드 → Artifacts에서 .uf2 다운로드
+```
+
+## 1. 로컬 환경 세팅 (fallback)
+
+> 빠른 실험용. 평소 빌드는 위 0번(클라우드)을 쓴다.
 
 | 문서 | 목적 |
 | --- | --- |
@@ -114,7 +128,8 @@ Notion에서 관리할 것은 아래다.
 
 | 문서 | 상태 | 비고 |
 | --- | --- | --- |
-| `zmk-local-setup-guide.md` | 핵심 | 새 Mac 환경 재현용 |
+| `cloud-build-github-actions.md` | 핵심 | 제품 빌드/배포 기본 경로 |
+| `zmk-local-setup-guide.md` | 참고 | 로컬 빌드 fallback |
 | `local-build-notes.md` | 참고 | 실제 이슈 히스토리 |
 | `bring-up-checklist.md` | 핵심 | 부품 도착 후 실행 시작점 |
 | `hardware-test-wiring.md` | 핵심 | 배선 실수 방지 |

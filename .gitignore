@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# 로컬 west 빌드 산출물 (저장소 내부에서 빌드할 경우 대비)
+.west/
+build/
+zephyr/
+modules/
+zmk/
+*.uf2
+
+# 에디터/환경
+.venv/
+*.log
