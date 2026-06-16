@@ -1,19 +1,20 @@
 # ZMK 클라우드 빌드 매트릭스 (GitHub Actions)
-# 보드: Seeed Studio XIAO BLE (nRF52840) -> ZMK 보드명 xiao_ble
+# 보드: Seeed Studio XIAO BLE (nRF52840) -> ZMK 보드명 xiao_ble//zmk
+#   (Zephyr 4.1부터 ZMK variant 표기 필수, `//`는 SoC가 하나라 생략)
 # 각 항목이 하나의 .uf2 펌웨어를 생성한다.
 include:
   # 단일 보드 검증/제품용
-  - board: xiao_ble
+  - board: xiao_ble//zmk
     shield: easysplit_1key
-  - board: xiao_ble
+  - board: xiao_ble//zmk
     shield: easysplit_4key
 
   # 좌우 무선 스플릿 (left = central)
-  - board: xiao_ble
+  - board: xiao_ble//zmk
     shield: easysplit_split_2x2_left
-  - board: xiao_ble
+  - board: xiao_ble//zmk
     shield: easysplit_split_2x2_right
 
   # 설정 초기화 펌웨어 (BLE 페어링 정보 삭제용 - 출고/AS 시 유용)
-  - board: xiao_ble
+  - board: xiao_ble//zmk
     shield: settings_reset
