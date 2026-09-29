@@ -1,0 +1,69 @@
+name: Commit attribution
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  attribution:
+    name: Verify new commit identities
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Check newly introduced commits
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          PUSH_HEAD: ${{ github.sha }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          expected='53691249+9ohigh@users.noreply.github.com'
+          if [[ "$EVENT_NAME" == 'pull_request' ]]; then
+            head="$PR_HEAD"
+            base="$PR_BASE"
+            commits="$(git rev-list "$head" --not "$base")"
+          elif [[ "$PUSH_BEFORE" =~ ^0+$ ]]; then
+            head="$PUSH_HEAD"
+            default_ref="refs/remotes/origin/$DEFAULT_BRANCH"
+            if git rev-parse --verify "$default_ref^{commit}" >/dev/null 2>&1; then
+              default_oid="$(git rev-parse "$default_ref^{commit}")"
+              commits="$(git rev-list "$head" --not "$default_oid")"
+            else
+              commits="$(git rev-list "$head")"
+            fi
+          else
+            commits="$(git rev-list "$PUSH_HEAD" --not "$PUSH_BEFORE")"
+          fi
+
+          if [[ -z "$commits" ]]; then
+            echo 'No newly introduced commits to check.'
+            exit 0
+          fi
+          failed=0
+          while IFS= read -r commit; do
+            [[ -n "$commit" ]] || continue
+            read -r author committer < <(git show -s --format='%ae %ce' "$commit")
+            author="$(printf '%s' "$author" | tr '[:upper:]' '[:lower:]')"
+            committer="$(printf '%s' "$committer" | tr '[:upper:]' '[:lower:]')"
+            if [[ "$author" != "$expected" || "$committer" != "$expected" ]]; then
+              echo "Commit $commit uses author <$author> and committer <$committer>; expected <$expected>." >&2
+              failed=1
+            fi
+          done <<< "$commits"
+          if [[ "$failed" -ne 0 ]]; then
+            echo 'Commit attribution check failed.' >&2
+            exit 1
+          fi
+          echo 'All newly introduced commits use the configured GitHub identity.'

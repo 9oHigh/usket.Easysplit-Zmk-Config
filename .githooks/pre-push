@@ -1,0 +1,51 @@
+#!/bin/sh
+set -eu
+expected='53691249+9ohigh@users.noreply.github.com'
+remote_name=${1:-unknown}
+remote_url=${2:-}
+if [ -z "$remote_url" ]; then
+  printf 'Git attribution guard: missing remote URL; push blocked.\n' >&2
+  exit 1
+fi
+while IFS=' ' read -r local_ref local_oid remote_ref remote_oid; do
+  [ -n "${local_ref:-}" ] || continue
+  zero=$(printf '%s' "$local_oid" | sed 's/./0/g')
+  [ "$local_oid" != "$zero" ] || continue
+  if [ "$remote_oid" = "$(printf '%s' "$remote_oid" | sed 's/./0/g')" ]; then
+    if ! listing=$(git ls-remote "$remote_url" HEAD 2>/dev/null); then
+      printf 'Git attribution guard: cannot read %s HEAD; push blocked.\n' "$remote_name" >&2
+      exit 1
+    fi
+    base_oid=$(printf '%s\n' "$listing" | awk '$2 == "HEAD" { print $1; exit }')
+    if [ -n "$base_oid" ]; then
+      if ! commits=$(git rev-list "$local_oid" --not "$base_oid" 2>/dev/null); then
+        printf 'Git attribution guard: cannot inspect commits for %s; push blocked.\n' "$remote_ref" >&2
+        exit 1
+      fi
+    else
+      if ! commits=$(git rev-list "$local_oid" 2>/dev/null); then
+        printf 'Git attribution guard: cannot inspect new repository history; push blocked.\n' >&2
+        exit 1
+      fi
+    fi
+  else
+    if ! commits=$(git rev-list "$local_oid" --not "$remote_oid" 2>/dev/null); then
+      printf 'Git attribution guard: cannot inspect commits for %s; push blocked.\n' "$remote_ref" >&2
+      exit 1
+    fi
+  fi
+  for commit in $commits; do
+    if ! identities=$(git show -s --format='%ae%x09%ce' "$commit" 2>/dev/null); then
+      printf 'Git attribution guard: cannot read commit %s; push blocked.\n' "$commit" >&2
+      exit 1
+    fi
+    author_email=$(printf '%s\n' "$identities" | cut -f1)
+    committer_email=$(printf '%s\n' "$identities" | cut -f2)
+    author_email=$(printf '%s' "$author_email" | tr '[:upper:]' '[:lower:]')
+    committer_email=$(printf '%s' "$committer_email" | tr '[:upper:]' '[:lower:]')
+    if [ "$author_email" != "$expected" ] || [ "$committer_email" != "$expected" ]; then
+      printf 'Git attribution guard: commit %s has author <%s> and committer <%s>; both must be %s. Push blocked.\n' "$commit" "$author_email" "$committer_email" "$expected" >&2
+      exit 1
+    fi
+  done
+done

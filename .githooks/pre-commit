@@ -1,0 +1,18 @@
+#!/bin/sh
+set -eu
+expected='53691249+9ohigh@users.noreply.github.com'
+extract_email() {
+  printf '%s\n' "$1" | sed -n 's/.*<\([^<>]*\)> [0-9][0-9]* [+-][0-9][0-9][0-9][0-9]$/\1/p'
+}
+for variable in GIT_AUTHOR_IDENT GIT_COMMITTER_IDENT; do
+  if ! identity=$(git var "$variable" 2>/dev/null); then
+    printf 'Git attribution guard: cannot resolve %s; commit blocked.\n' "$variable" >&2
+    exit 1
+  fi
+  email=$(extract_email "$identity")
+  normalized=$(printf '%s' "$email" | tr '[:upper:]' '[:lower:]')
+  if [ -z "$email" ] || [ "$normalized" != "$expected" ]; then
+    printf 'Git attribution guard: %s must use %s; commit blocked.\n' "$variable" "$expected" >&2
+    exit 1
+  fi
+done
