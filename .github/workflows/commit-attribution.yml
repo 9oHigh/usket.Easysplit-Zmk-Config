@@ -11,54 +11,51 @@ permissions:
 
 jobs:
   attribution:
-    name: Verify new commit identities
+    name: Verify commit identities
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - name: Check newly introduced commits
+      - name: Check branch history or new pull request commits
         shell: bash
         env:
           EVENT_NAME: ${{ github.event_name }}
-          PUSH_BEFORE: ${{ github.event.before }}
           PUSH_HEAD: ${{ github.sha }}
-          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           PR_BASE: ${{ github.event.pull_request.base.sha }}
           PR_HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
-          expected='53691249+9ohigh@users.noreply.github.com'
+          expected_name='9oHigh'
+          expected_email='usket@icloud.com'
           if [[ "$EVENT_NAME" == 'pull_request' ]]; then
-            head="$PR_HEAD"
-            base="$PR_BASE"
-            commits="$(git rev-list "$head" --not "$base")"
-          elif [[ "$PUSH_BEFORE" =~ ^0+$ ]]; then
-            head="$PUSH_HEAD"
-            default_ref="refs/remotes/origin/$DEFAULT_BRANCH"
-            if git rev-parse --verify "$default_ref^{commit}" >/dev/null 2>&1; then
-              default_oid="$(git rev-parse "$default_ref^{commit}")"
-              commits="$(git rev-list "$head" --not "$default_oid")"
-            else
-              commits="$(git rev-list "$head")"
-            fi
+            commits="$(git rev-list "$PR_HEAD" --not "$PR_BASE")"
           else
-            commits="$(git rev-list "$PUSH_HEAD" --not "$PUSH_BEFORE")"
+            commits="$(git rev-list "$PUSH_HEAD")"
           fi
 
           if [[ -z "$commits" ]]; then
-            echo 'No newly introduced commits to check.'
+            echo 'No commits to check.'
             exit 0
           fi
           failed=0
           while IFS= read -r commit; do
             [[ -n "$commit" ]] || continue
-            read -r author committer < <(git show -s --format='%ae %ce' "$commit")
-            author="$(printf '%s' "$author" | tr '[:upper:]' '[:lower:]')"
-            committer="$(printf '%s' "$committer" | tr '[:upper:]' '[:lower:]')"
-            if [[ "$author" != "$expected" || "$committer" != "$expected" ]]; then
-              echo "Commit $commit uses author <$author> and committer <$committer>; expected <$expected>." >&2
+            IFS=$'\t' read -r author_name author_email committer_name committer_email < <(git show -s --format='%an%x09%ae%x09%cn%x09%ce' "$commit")
+            author_email="$(printf '%s' "$author_email" | tr '[:upper:]' '[:lower:]')"
+            committer_email="$(printf '%s' "$committer_email" | tr '[:upper:]' '[:lower:]')"
+            if [[ "$author_name" != "$expected_name" || "$author_email" != "$expected_email" ]]; then
+              echo "Commit $commit author is $author_name <$author_email>; expected $expected_name <$expected_email>." >&2
+              failed=1
+              continue
+            fi
+            if [[ "$committer_name" == "$expected_name" && "$committer_email" == "$expected_email" ]]; then
+              continue
+            elif [[ "$committer_name" == 'GitHub' && "$committer_email" == 'noreply@github.com' ]]; then
+              continue
+            else
+              echo "Commit $commit committer is $committer_name <$committer_email>; expected $expected_name <$expected_email> or GitHub web operation." >&2
               failed=1
             fi
           done <<< "$commits"
@@ -66,4 +63,4 @@ jobs:
             echo 'Commit attribution check failed.' >&2
             exit 1
           fi
-          echo 'All newly introduced commits use the configured GitHub identity.'
+          echo 'All commits use the configured GitHub identity.'

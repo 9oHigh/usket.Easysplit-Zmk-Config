@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
-expected_name='LEE GYEONG HU'
-expected_email='53691249+9oHigh@users.noreply.github.com'
+expected_name='9oHigh'
+expected_email='usKet@icloud.com'
 root=$(git rev-parse --show-toplevel 2>/dev/null) || {
   printf 'Run this script inside a Git working tree.\n' >&2
   exit 1
